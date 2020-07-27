@@ -5,15 +5,16 @@ using CodeMonkey.Utils;
 using Color = UnityEngine.Color;
 
 public class Grid {
-
+    private Vector3 _origin;
     private int _width;
     private int _height;
     private float _cellSize;
     private int[,] _gridArray;
     private TextMesh[,] _debugTextArray;
 
-    public Grid(int width, int height, float cellSize)
+    public Grid(Vector3 origin, int width, int height, float cellSize)
     {
+        this._origin = origin;
         this._width = width;
         this._height = height;
         this._cellSize = cellSize;
@@ -25,7 +26,7 @@ public class Grid {
         {
             for (var y = 0; y < _gridArray.GetLength(1); y++)
             {
-                _debugTextArray[x,y] = UtilsClass.CreateWorldText(_gridArray[x, y].ToString(), null, GetWorldPosition(x,y) + new Vector3(cellSize, cellSize) * 0.5f, 20, Color.white, TextAnchor.MiddleCenter);
+                _debugTextArray[x,y] = UtilsClass.CreateWorldText(_gridArray[x, y].ToString(), null, GetWorldPosition(x,y) + new Vector3(cellSize, cellSize) * 0.5f, ((int)this._cellSize * 4), Color.white, TextAnchor.MiddleCenter);
                 Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x,y + 1), Color.white, 100f);
                 Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.white, 100f);
             }
@@ -39,7 +40,7 @@ public class Grid {
 
     private Vector3 GetWorldPosition(int x, int y)
     {
-        return new Vector3(x, y) * this._cellSize;
+        return new Vector3(x, y) * this._cellSize + this._origin;
     }
 
     public void SetValue(int x, int y, int value)
@@ -51,8 +52,8 @@ public class Grid {
 
     private void GetXy(Vector3 worldPosition, out int x, out int y)
     {
-        x = Mathf.FloorToInt(worldPosition.x / _cellSize);
-        y = Mathf.FloorToInt(worldPosition.y / _cellSize);
+        x = Mathf.FloorToInt((worldPosition - this._origin).x / _cellSize);
+        y = Mathf.FloorToInt((worldPosition - this._origin).y / _cellSize);
     }
 
     public void SetValue(Vector3 worldPosition, int value)
