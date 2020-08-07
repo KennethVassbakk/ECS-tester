@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 
@@ -9,9 +10,12 @@ namespace dflike.World.Grid
     {
         public event EventHandler<OnGridObjectChangedEventArgs> OnGridObjectChanged;
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public class OnGridObjectChangedEventArgs : EventArgs
         {
-            public int x, y, z;
+            public int x;
+            public int y;
+            public int z;
         }
 
         private readonly int _width, _height, _depth;
@@ -32,6 +36,7 @@ namespace dflike.World.Grid
             this._cellSize = cellSize;
             this._originPosition = originPosition;
 
+            // Store a dictionary containing all the grids.
             _layers = new Dictionary<int, TGridObject[,]>();
 
             // Populate grid
@@ -46,6 +51,7 @@ namespace dflike.World.Grid
                     }
                 }
 
+                // Add the current layer grid to the layer dictionary
                 _layers.Add(z, temp);
             }
 
