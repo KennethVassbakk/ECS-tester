@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace dflike.Helpers
 {
@@ -13,37 +10,33 @@ namespace dflike.Helpers
 
         private static Quaternion[] _cachedQuaternionEulerArr;
 
-        private static void CacheQuaternionEuler()
-        {
+        private static void CacheQuaternionEuler() {
             if (_cachedQuaternionEulerArr != null) return;
             _cachedQuaternionEulerArr = new Quaternion[360];
-            for (var i = 0; i < 360; i++)
-            {
+            for (var i = 0; i < 360; i++) {
                 _cachedQuaternionEulerArr[i] = Quaternion.Euler(0, 0, 1);
             }
         }
 
-        private static Quaternion GetQuaternionEuler(float rotFloat)
-        {
+        private static Quaternion GetQuaternionEuler(float rotFloat) {
             int rot = Mathf.RoundToInt(rotFloat);
             rot = rot % 360;
             if (rot < 0) rot += 360;
-            if(_cachedQuaternionEulerArr == null) 
+            if (_cachedQuaternionEulerArr == null)
                 CacheQuaternionEuler();
 
             return _cachedQuaternionEulerArr[rot];
-  
+
         }
 
-        private static Mesh CreateEmptyMesh()
-        {
+
+        private static Mesh GetCreateEmptyMesh() {
             Mesh mesh = new Mesh();
             mesh.vertices = new Vector3[0];
             mesh.uv = new Vector2[0];
             mesh.triangles = new int[0];
             return mesh;
         }
-
 
         public static void CreateEmptyMeshArrays(int quadCount, out Vector3[] vertices, out Vector2[] uvs, out int[] triangles) {
             vertices = new Vector3[4 * quadCount];
@@ -57,7 +50,7 @@ namespace dflike.Helpers
 
         public static Mesh AddToMesh(Mesh mesh, Vector3 pos, float rot, Vector3 baseSize, Vector2 uv00, Vector2 uv11) {
             if (mesh == null) {
-                mesh = CreateEmptyMesh();
+                mesh = GetCreateEmptyMesh();
             }
             Vector3[] vertices = new Vector3[4 + mesh.vertices.Length];
             Vector2[] uvs = new Vector2[4 + mesh.uv.Length];

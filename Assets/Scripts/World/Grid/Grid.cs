@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +11,6 @@ namespace dflike.World.Grid
 
         public class OnGridObjectChangedEventArgs : EventArgs
         {
-            // ReSharper disable once InconsistentNaming
             public int x, y, z;
         }
 
@@ -22,13 +20,12 @@ namespace dflike.World.Grid
 
         /// <summary>
         /// We're storing each grid layer in _layers,
-        /// the 'wanted' grid is extracted from this.
+        /// the wanted grid layer is extracted from this.
         /// </summary>
         private readonly Dictionary<int, TGridObject[,]> _layers;
 
         public Grid(int width, int height, int depth, float cellSize, Vector3 originPosition,
-            Func<Grid<TGridObject>, int, int, int, TGridObject> createGridObject)
-        {
+            Func<Grid<TGridObject>, int, int, int, TGridObject> createGridObject) {
             this._width = width;
             this._height = height;
             this._depth = depth;
@@ -36,134 +33,89 @@ namespace dflike.World.Grid
             this._originPosition = originPosition;
 
             _layers = new Dictionary<int, TGridObject[,]>();
-            TGridObject[,] temp;
 
             // Populate grid
-            for (int z = 0; z < depth; z++)
-            {
-                temp = new TGridObject[width, height];
-                for (int x = 0; x < width; x++)
-                {
-                    for (int y = 0; y < height; y++)
-                    {
+            for (int z = 0; z < depth; z++) {
+                var temp = new TGridObject[width, height];
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
                         temp[x, y] = createGridObject(this, x, y, z);
                         Debug.Log(temp[x, y]);
                     }
                 }
 
                 _layers.Add(z, temp);
-                
+
             }
 
-            //bool showDebug = false; // Used for debug purposes.
-            //if (showDebug) {
-            //    TextMesh[,,] debugTextArray = new TextMesh[width, height, depth];
-
-            //    for (int x = 0; x < _gridArray.GetLength((0)); x++) {
-            //        for (int y = 0; y < _gridArray.GetLength(1); y++) {
-            //            for (int z = 0; z < _gridArray.GetLength(2); z++) {
-            //                // Draw some text here. to show the grid cell
-            //            }
-            //        }
-            //    }
-
-            //    // Lets draw some lines to show the grid on the editor at least.
-            //    Debug.DrawLine(GetWorldPosition(0, height), GetWorldPosition(width, height), Color.white, 100f);
-            //    Debug.DrawLine(GetWorldPosition(width, 0), GetWorldPosition(width, height), Color.white, 100f);
-
-            //    OnGridObjectChanged += (object sender, OnGridObjectChangedEventArgs eventArgs) => {
-            //        // Handle when it goes to change something
-            //    };
-            //}
-            Debug.Log("Grid Initalized");
-
+            Debug.Log("Grid initialized");
         }
 
-        public int GetWidth()
-        {
+        public int GetWidth() {
             return _width;
         }
 
-        public int GetHeight()
-        {
+        public int GetHeight() {
             return _height;
         }
 
-        public int GetDepth()
-        {
+        public int GetDepth() {
             return _depth;
         }
 
-        public float GetCellSize()
-        {
+        public float GetCellSize() {
             return _cellSize;
         }
 
-        public Vector3 GetWorldPosition(int x, int y)
-        {
+        public Vector3 GetWorldPosition(int x, int y) {
             return new Vector3(x, y) * _cellSize + _originPosition;
         }
 
-
-        public void GetXy(Vector3 worldPosition, out int x, out int y)
-        {
+        public void GetXy(Vector3 worldPosition, out int x, out int y) {
             x = Mathf.FloorToInt((worldPosition - _originPosition).x / _cellSize);
             y = Mathf.FloorToInt((worldPosition - _originPosition).y / _cellSize);
         }
 
-        public void GetXyz(Vector3 worldPosition, out int x, out int y, out int z)
-        {
+        public void GetXyz(Vector3 worldPosition, out int x, out int y, out int z) {
             x = Mathf.FloorToInt((worldPosition - _originPosition).x / _cellSize);
             y = Mathf.FloorToInt((worldPosition - _originPosition).y / _cellSize);
             z = Mathf.FloorToInt((worldPosition - _originPosition).z);
         }
 
-
-        public void SetGridObject(int x, int y, int z, TGridObject value)
-        {
+        public void SetGridObject(int x, int y, int z, TGridObject value) {
             if (x < 0 || y < 0 || z < 0 || x >= _width || y >= _height || z >= _depth) return;
 
             _layers[z][x, y] = value;
-            OnGridObjectChanged?.Invoke(this, new OnGridObjectChangedEventArgs {x = x, y = y, z = z});
+            OnGridObjectChanged?.Invoke(this, new OnGridObjectChangedEventArgs { x = x, y = y, z = z });
         }
 
-        public void TriggerGridObjectChanged(int x, int y, int z)
-        {
-            OnGridObjectChanged?.Invoke(this, new OnGridObjectChangedEventArgs {x = x, y = y, z = z});
+        public void TriggerGridObjectChanged(int x, int y, int z) {
+            OnGridObjectChanged?.Invoke(this, new OnGridObjectChangedEventArgs { x = x, y = y, z = z });
         }
 
-        public void SetGridObject(Vector3 worldPosition, TGridObject value)
-        {
+        public void SetGridObject(Vector3 worldPosition, TGridObject value) {
             GetXyz(worldPosition, out var x, out var y, out var z);
             SetGridObject(x, y, z, value);
         }
 
-        public TGridObject GetGridObject(int x, int y, int z)
-        {
-            if (x >= 0 && y >= 0 && z >= 0 && x < _width && y < _height && z < _depth)
-            {
- 
-                return _layers[z][x,y];
-            }
-            else
-            {
+        public TGridObject GetGridObject(int x, int y, int z) {
+            if (x >= 0 && y >= 0 && z >= 0 && x < _width && y < _height && z < _depth) {
+
+                return _layers[z][x, y];
+            } else {
                 return default(TGridObject);
             }
         }
 
-
-        public TGridObject GetGridObject(Vector3 worldPosition)
-        {
+        public TGridObject GetGridObject(Vector3 worldPosition) {
             GetXyz(worldPosition, out var x, out var y, out var z);
             return GetGridObject(x, y, z);
         }
 
-        public TGridObject[,] GetGridLayer(int z)
-        {
+        public TGridObject[,] GetGridLayer(int z) {
             if (z >= 0 && z < _depth)
                 return _layers[z];
-            else
-            {
+            else {
                 return null;
             }
         }
