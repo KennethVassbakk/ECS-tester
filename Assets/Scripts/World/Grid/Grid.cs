@@ -222,5 +222,14 @@ namespace dflike.World.Grid
         public void TriggerGridObjectChanged(int x, int y, int z) {
             OnGridObjectChanged?.Invoke(this, new OnGridObjectChangedEventArgs { x = x, y = y, z = z });
         }
+
+        /// <summary>
+        /// Used to trigger an object changed
+        /// based on a Vector3
+        /// </summary>
+        /// <param name="location"></param>
+        public void TriggerGridObjectChanged(Vector3 location) {
+            OnGridObjectChanged?.Invoke(this, new OnGridObjectChangedEventArgs { x = (int)location.x, y = (int)location.y, z = (int)location.z });
+        }
     }
 }
