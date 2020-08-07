@@ -35,10 +35,10 @@ namespace dflike.World.Grid
             _layers = new Dictionary<int, TGridObject[,]>();
 
             // Populate grid
-            for (int z = 0; z < depth; z++) {
+            for (var z = 0; z < depth; z++) {
                 var temp = new TGridObject[width, height];
-                for (int x = 0; x < width; x++) {
-                    for (int y = 0; y < height; y++) {
+                for (var x = 0; x < width; x++) {
+                    for (var y = 0; y < height; y++) {
                         temp[x, y] = createGridObject(this, x, y, z);
                         Debug.Log(temp[x, y]);
                     }
