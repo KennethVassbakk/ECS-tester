@@ -28,6 +28,15 @@ namespace dflike.World.Grid
         /// </summary>
         private readonly Dictionary<int, TGridObject[,]> _layers;
 
+        /// <summary>
+        /// Constructor for the Grid
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="depth"></param>
+        /// <param name="cellSize"></param>
+        /// <param name="originPosition"></param>
+        /// <param name="createGridObject"></param>
         public Grid(int width, int height, int depth, float cellSize, Vector3 originPosition,
             Func<Grid<TGridObject>, int, int, int, TGridObject> createGridObject) {
             this._width = width;
@@ -41,21 +50,18 @@ namespace dflike.World.Grid
 
             // Populate grid
             // This creates a TGridObject[,] for each of the layers (depth)
-            // it the inputs the generated TGridObject[,] into the _Layers(dictionary)
+            // it then inputs the generated TGridObject[,] into the _Layers(dictionary)
             for (var z = 0; z < depth; z++) {
                 var temp = new TGridObject[width, height];
                 for (var x = 0; x < width; x++) {
                     for (var y = 0; y < height; y++) {
                         temp[x, y] = createGridObject(this, x, y, z);
-                        Debug.Log(temp[x, y]);
                     }
                 }
 
                 // Add the current layer grid to the layer dictionary
                 _layers.Add(z, temp);
             }
-
-            Debug.Log("Grid initialized");
         }
 
         /// <summary>
