@@ -149,7 +149,10 @@ namespace dflike.World.Grid
         /// <param name="z">int z Location</param>
         /// <param name="value">Value</param>
         public void SetGridObject(int x, int y, int z, TGridObject value) {
-            if (x < 0 || y < 0 || z < 0 || x >= _width || y >= _height || z >= _depth) return;
+            if (!CheckValidity(x, y, z)) {
+                Debug.LogError("Tried to assign a grid location which does not exist - at: " + x + y + z);
+                return;
+            }
 
             _layers[z][x, y] = value;
             OnGridObjectChanged?.Invoke(this, new OnGridObjectChangedEventArgs { x = x, y = y, z = z });
@@ -172,14 +175,9 @@ namespace dflike.World.Grid
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns>The object in the cell, or empty by default</returns>
-        public TGridObject GetGridObject(int x, int y, int z) {
-            if (x >= 0 && y >= 0 && z >= 0 && x < _width && y < _height && z < _depth) {
-                return _layers[z][x, y];
-            }
-            else 
-            {
-                return default(TGridObject);
-            }
+        public TGridObject GetGridObject(int x, int y, int z)
+        {
+            return CheckValidity(x, y, z) ? _layers[z][x, y] : default(TGridObject);
         }
 
         /// <summary>
@@ -187,17 +185,10 @@ namespace dflike.World.Grid
         /// </summary>
         /// <param name="worldPosition">Vector3 World Position</param>
         /// <returns>The Object in the cell, or empty by default</returns>
-        public TGridObject GetGridObject(Vector3 worldPosition) {
-            if (worldPosition.x >= 0 && worldPosition.y >= 0 && worldPosition.z >= 0 && worldPosition.x < _width &&
-                worldPosition.y < _height && worldPosition.z < _depth)
-            {
-                GetXyz(worldPosition, out var x, out var y, out var z);
-                return GetGridObject(x, y, z);
-            }
-            else
-            {
-                return default(TGridObject);
-            }
+        public TGridObject GetGridObject(Vector3 worldPosition)
+        {
+            GetXyz(worldPosition, out var x, out var y, out var z);
+            return CheckValidity(x, y, z) ? GetGridObject(x, y, z) : default(TGridObject);
         }
 
         /// <summary>
@@ -230,6 +221,18 @@ namespace dflike.World.Grid
         /// <param name="location"></param>
         public void TriggerGridObjectChanged(Vector3 location) {
             OnGridObjectChanged?.Invoke(this, new OnGridObjectChangedEventArgs { x = (int)location.x, y = (int)location.y, z = (int)location.z });
+        }
+
+        /// <summary>
+        /// Check Validity of grid location
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns> True if valid, false if invalid</returns>
+        private bool CheckValidity(int x, int y, int z)
+        {
+            return x >= 0 && y >= 0 && z >= 0 && x < _width && y < _height && z < _depth && _layers.ContainsKey(z);
         }
     }
 }
