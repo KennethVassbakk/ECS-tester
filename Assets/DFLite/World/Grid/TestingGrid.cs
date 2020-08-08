@@ -45,8 +45,6 @@ public class TestingGrid : MonoBehaviour
                     Debug.DrawLine(pfGrid.GetWorldPosition(x, y), pfGrid.GetWorldPosition(x, y + 1), Color.white, 100f);
                     Debug.DrawLine(pfGrid.GetWorldPosition(x, y), pfGrid.GetWorldPosition(x + 1, y), Color.white, 100f);
 
-                    Debug.Log(pfGrid.GetGridObject(0, 0, 0).IsWalkable());
-
                 }
             }
         }
@@ -54,6 +52,7 @@ public class TestingGrid : MonoBehaviour
         Debug.DrawLine(pfGrid.GetWorldPosition(0, gridHeight), pfGrid.GetWorldPosition(gridWidth, gridHeight), Color.white, 100f);
         Debug.DrawLine(pfGrid.GetWorldPosition(gridWidth, 0), pfGrid.GetWorldPosition(gridWidth, gridHeight), Color.white, 100f);
     }
+    
 
 }
 

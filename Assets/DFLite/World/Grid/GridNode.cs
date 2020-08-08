@@ -18,7 +18,6 @@ namespace DFLite.World.Grid
             this._y = y;
             this._z = z;
             _isWalkable = true;
-            Debug.Log("Initialized Gridnode! (" + _x + "," + _y + "," + _z +")");
         }
 
         public bool IsWalkable()

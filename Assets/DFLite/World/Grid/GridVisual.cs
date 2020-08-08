@@ -26,7 +26,6 @@ namespace DFLite.World.Grid
             _updateMesh = true;
 
             grid.OnGridObjectChanged += Grid_OnGridValueChanged;
-            Debug.Log("Set Grid!");
         }
 
         private void Grid_OnGridValueChanged(object sender, Grid<GridNode>.OnGridObjectChangedEventArgs e)
@@ -52,8 +51,7 @@ namespace DFLite.World.Grid
                     Vector3 quadSize = new Vector3(1, 1) * _grid.GetCellSize();
 
                     GridNode gridNode = _grid.GetGridObject(x, y, 0);
-                    Debug.Log(_grid.GetGridObject(x,y,0).IsWalkable());
-                    Debug.Log(gridNode);
+
 
                     Vector2 uv00 = new Vector2(0, 0);
                     Vector2 uv11 = new Vector2(0.5f, 0.5f);
