@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using dflike.Helpers;
+using DFLite.Helpers;
 
-namespace dflike.World.Grid
+namespace DFLite.World.Grid
 {
     public class GridVisual : MonoBehaviour
     {
@@ -42,7 +42,7 @@ namespace dflike.World.Grid
         }
 
         private void UpdateVisual() {
-            dflike.Helpers.MeshUtils.CreateEmptyMeshArrays(_grid.GetWidth() * _grid.GetHeight(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
+            MeshUtils.CreateEmptyMeshArrays(_grid.GetWidth() * _grid.GetHeight(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
             GridNode[,] currentGrid = _grid.GetGridLayer(_currentDepthIndex);
 
             for (int x = 0; x < _grid.GetWidth(); x++) {

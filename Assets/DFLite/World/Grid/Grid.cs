@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 
-namespace dflike.World.Grid
+namespace DFLite.World.Grid
 {
     public class Grid<TGridObject>
     {

@@ -1,5 +1,5 @@
 ﻿using CodeMonkey.Utils;
-using dflike.World.Grid;
+using DFLite.World.Grid;
 using UnityEngine;
 
 public class TestingGrid : MonoBehaviour
@@ -16,7 +16,7 @@ public class TestingGrid : MonoBehaviour
     public int gridWidth = 2;
     public int gridHeight = 2;
     public int gridDepth = 1;
-    public float cellSize = 16f;
+    public float cellSize = 1f;
 
     //public TGridObject[,] CurrentGrid;
     private void Awake() {
@@ -45,7 +45,7 @@ public class TestingGrid : MonoBehaviour
                     Debug.DrawLine(pfGrid.GetWorldPosition(x, y), pfGrid.GetWorldPosition(x, y + 1), Color.white, 100f);
                     Debug.DrawLine(pfGrid.GetWorldPosition(x, y), pfGrid.GetWorldPosition(x + 1, y), Color.white, 100f);
 
-                    //  Debug.Log(message: Grid.GetGridObject(2,2,1).IsWalkable());
+                    Debug.Log(pfGrid.GetGridObject(0, 0, 0).IsWalkable());
 
                 }
             }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace dflike.Helpers
+namespace DFLite.Helpers
 {
     public static class MeshUtils
     {

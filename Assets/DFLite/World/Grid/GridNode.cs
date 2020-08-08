@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace dflike.World.Grid
+namespace DFLite.World.Grid
 {
     public class GridNode
     {
