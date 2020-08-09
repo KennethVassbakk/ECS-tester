@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 
-namespace DFLite.World.Grid
+namespace DFLite.World.GridDictionary
 {
     public class Grid<TGridObject>
     {
@@ -21,7 +21,12 @@ namespace DFLite.World.Grid
         private readonly int _width, _height, _depth;
         private readonly float _cellSize;
         private readonly Vector3 _originPosition;
-        private TGridObject[,,] _gridarray;
+
+        /// <summary>
+        /// We're storing each grid layer in _layers,
+        /// the wanted grid layer is extracted from this.
+        /// </summary>
+        private readonly Dictionary<int, TGridObject[,]> _layers;
 
         /// <summary>
         /// Constructor for the Grid
@@ -39,17 +44,23 @@ namespace DFLite.World.Grid
             this._depth = depth;
             this._cellSize = cellSize;
             this._originPosition = originPosition;
-            this._gridarray = new TGridObject[width, height, depth];
 
+            // Store a dictionary containing all the grids.
+            _layers = new Dictionary<int, TGridObject[,]>();
 
             // Populate grid
-
-            for (var x = 0; x < width; x++) {
-                for (var y = 0; y < height; y++) {
-                    for (var z = 0; z < depth; z++) {
-                        _gridarray[x, y, z] = createGridObject(this, x, y, z);
+            // This creates a TGridObject[,] for each of the layers (depth)
+            // it then inputs the generated TGridObject[,] into the _Layers(dictionary)
+            for (var z = 0; z < depth; z++) {
+                var temp = new TGridObject[width, height];
+                for (var x = 0; x < width; x++) {
+                    for (var y = 0; y < height; y++) {
+                        temp[x, y] = createGridObject(this, x, y, z);
                     }
                 }
+
+                // Add the current layer grid to the layer dictionary
+                _layers.Add(z, temp);
             }
         }
 
@@ -101,8 +112,7 @@ namespace DFLite.World.Grid
         /// </summary>
         /// <param name="location">Vector3 Location</param>
         /// <returns>Vector3 Grid Location with Z</returns>
-        public Vector3 GetWorldPosition(Vector3 location)
-        {
+        public Vector3 GetWorldPosition(Vector3 location) {
             return (location * _cellSize + _originPosition);
         }
 
@@ -143,7 +153,7 @@ namespace DFLite.World.Grid
                 return;
             }
 
-            _gridarray[x, y, z] = value;
+            _layers[z][x, y] = value;
             OnGridObjectChanged?.Invoke(this, new OnGridObjectChangedEventArgs { x = x, y = y, z = z });
         }
 
@@ -164,9 +174,8 @@ namespace DFLite.World.Grid
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns>The object in the cell, or empty by default</returns>
-        public TGridObject GetGridObject(int x, int y, int z)
-        {
-            return CheckValidity(x, y, z) ? _gridarray[x, y, z] : default(TGridObject);
+        public TGridObject GetGridObject(int x, int y, int z) {
+            return CheckValidity(x, y, z) ? _layers[z][x, y] : default(TGridObject);
         }
 
         /// <summary>
@@ -174,10 +183,22 @@ namespace DFLite.World.Grid
         /// </summary>
         /// <param name="worldPosition">Vector3 World Position</param>
         /// <returns>The Object in the cell, or empty by default</returns>
-        public TGridObject GetGridObject(Vector3 worldPosition)
-        {
+        public TGridObject GetGridObject(Vector3 worldPosition) {
             GetXyz(worldPosition, out var x, out var y, out var z);
             return CheckValidity(x, y, z) ? GetGridObject(x, y, z) : default(TGridObject);
+        }
+
+        /// <summary>
+        /// Return a TGridObject[,] based on the defined Z layer
+        /// </summary>
+        /// <param name="z"></param>
+        /// <returns>The grid at the set depth(z)</returns>
+        public TGridObject[,] GetGridLayer(int z) {
+            if (z >= 0 && z < _depth && _layers.ContainsKey(z))
+                return _layers[z];
+            else {
+                return null;
+            }
         }
 
         /// <summary>
@@ -206,9 +227,8 @@ namespace DFLite.World.Grid
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns> True if valid, false if invalid</returns>
-        private bool CheckValidity(int x, int y, int z)
-        {
-            return x >= 0 && y >= 0 && z >= 0 && x < _width && y < _height && z < _depth;
+        private bool CheckValidity(int x, int y, int z) {
+            return x >= 0 && y >= 0 && z >= 0 && x < _width && y < _height && z < _depth && _layers.ContainsKey(z);
         }
     }
 }
