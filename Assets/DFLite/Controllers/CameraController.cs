@@ -72,6 +72,7 @@ namespace DFLite.Controllers
 
             // Time to redraw the map!
             // TODO: Reference the overwatch unit and redraw map!
+            //TestingGrid.Instance.gridVisual.UpdateMesh();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using DFLite.Helpers;
 
 namespace DFLite.World.Grid
@@ -33,6 +31,11 @@ namespace DFLite.World.Grid
             _updateMesh = true;
         }
 
+        public void UpdateMesh()
+        {
+            _updateMesh = true;
+        }
+
         private void LateUpdate() {
             if (!_updateMesh) return;
 
@@ -41,8 +44,16 @@ namespace DFLite.World.Grid
         }
 
         private void UpdateVisual() {
+
+            // UNDONE: We should check if the current visuals are still inside the camera.
+            // If they are inside the camera view, we can leave them as is.
+            // if they are not inside the camera view, we can eliminate them.
+            //
+            // We should only draw clusters that are inside the camera view.
+
+
             MeshUtils.CreateEmptyMeshArrays(_grid.GetWidth() * _grid.GetHeight(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
-            GridNode[,] currentGrid = _grid.GetGridLayer(_currentDepthIndex);
+            Debug.Log("We're supposed to update the mesh!");
 
             for (int x = 0; x < _grid.GetWidth(); x++) {
                 for (int y = 0; y < _grid.GetHeight(); y++) {
@@ -50,7 +61,7 @@ namespace DFLite.World.Grid
                     int index = x * _grid.GetHeight() + y;
                     Vector3 quadSize = new Vector3(1, 1) * _grid.GetCellSize();
 
-                    GridNode gridNode = _grid.GetGridObject(x, y, 0);
+                    GridNode gridNode = _grid.GetGridObject(x, y, _currentDepthIndex);
 
 
                     Vector2 uv00 = new Vector2(0, 0);
