@@ -368,7 +368,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: 50, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -437,6 +437,7 @@ GameObject:
   - component: {fileID: 535357216}
   - component: {fileID: 535357217}
   - component: {fileID: 535357213}
+  - component: {fileID: 535357215}
   m_Layer: 0
   m_Name: Testing
   m_TagString: Untagged
@@ -466,6 +467,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &535357215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535357212}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0bc9a962dfdf634ca0356a743a68288, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  material: {fileID: 2100000, guid: 733fc25411f653247889ef495341c7f6, type: 2}
 --- !u!114 &535357216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,7 +488,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 535357212}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ad1cbd48b9939840b71688ebee5a2e7, type: 3}
   m_Name: 
@@ -492,7 +507,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 535357212}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e43fb61f415685743a55c05faa43dda8, type: 3}
   m_Name: 
@@ -540,11 +555,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ae2e99700e12f34ba1eec961817a8f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useDOTS: 0
+  useDOTS: 1
   SpriteNoDOTS: {fileID: 8915404116355474253, guid: 5fa0d74a52bb8e74c8c6fe461d01c5d1, type: 3}
-  SpriteDots: {fileID: 8915404116355474253, guid: 625ac55602dbfdd4d8e5c5aa3cc77a26, type: 3}
-  xWidth: 100
-  yWidth: 100
+  xWidth: 1000
+  yWidth: 1000
   sprite: {fileID: 8371019140385695755, guid: 13c40bed62c603f4c8c4fcc0b6af9ef5, type: 3}
   parent: {fileID: 1346176164}
-  material: {fileID: 2100000, guid: 931fdff844d9bcb4eb26a53b935b283b, type: 2}
+  _mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  _material: {fileID: 2100000, guid: 733fc25411f653247889ef495341c7f6, type: 2}

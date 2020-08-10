@@ -3,28 +3,33 @@ using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Entities.Conversion;
 using Unity.Collections;
+using Unity.Mathematics;
+using Unity.Rendering;
 using UnityEngine;
 using Unity.Transforms;
+using UnityEngine.Rendering;
 
 
 public class TestSprites : MonoBehaviour
 {
     public bool useDOTS;
     public GameObject SpriteNoDOTS;
-    public GameObject SpriteDots;
     public int xWidth;
     public int yWidth;
     public Sprite sprite;
     public Transform parent;
-    public Material material;
-    private Entity go;
-    private EntityManager manager;
+    
 
-    private BlobAssetStore blobAssetStore;
+    // ECS STUFF
+    private EntityManager _entityManager;
+    [SerializeField] private Mesh _mesh;
+    [SerializeField] private Material _material;
+
+
 
     private void Start()
     {
-  
+        
     }
 
     public void Awake()
@@ -44,21 +49,35 @@ public class TestSprites : MonoBehaviour
             }
 
         } else {
-            manager = World.DefaultGameObjectInjectionWorld.EntityManager;
-            Debug.Log("This should not be firing if not dots");
+            _entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-            GameObjectConversionSettings settings =
-                GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
+            for (int x = 0; x < xWidth; x++)
+            {
+                for (int y = 0; y < yWidth; y++)
+                {
+                    Entity entity = _entityManager.CreateEntity(
+                        typeof(RenderMesh),
+                        typeof(LocalToWorld),
+                        typeof(Translation),
+                        typeof(RenderBounds)
+                    );
 
-            for (int x = 0; x < xWidth; x++) {
-                for (int y = 0; y < yWidth; y++) {
-                    GameObject go = Instantiate(SpriteDots);
-                    go.transform.position = new Vector3(x, y, 0);
-                    go.transform.parent = parent;
-                    //GameObjectConversionUtility.ConvertGameObjectHierarchy(SpriteNoDOTS, settings);
+                    _entityManager.SetSharedComponentData(entity, new RenderMesh {
+                        mesh = _mesh,
+                        material = _material,
+                    });
 
+                    _entityManager.SetComponentData(entity, new Translation() {
+                        Value = new float3((float)x, (float)y, 0f)
+                    });
+
+                    _entityManager.SetComponentData(entity, new RenderBounds()
+                    {
+                        Value = _mesh.bounds.ToAABB(),
+                    });
                 }
             }
+
         }
     }
 }

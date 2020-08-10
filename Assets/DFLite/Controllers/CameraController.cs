@@ -27,7 +27,7 @@ namespace DFLite.Controllers
         private void Start() {
             this._camera = Camera.main;
             this.ZoomMin = .1f;
-            this.ZoomMax = 10f;
+            this.ZoomMax = 30f;
             this.Sensitivity = 1f;
             this.ZoomDesired = 1f;
             UpdateViewRect();

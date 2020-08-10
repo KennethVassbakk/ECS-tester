@@ -53,7 +53,6 @@ namespace DFLite.World.Grid
 
 
             MeshUtils.CreateEmptyMeshArrays(_grid.GetWidth() * _grid.GetHeight(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
-            Debug.Log("We're supposed to update the mesh!");
 
             for (int x = 0; x < _grid.GetWidth(); x++) {
                 for (int y = 0; y < _grid.GetHeight(); y++) {
@@ -79,6 +78,7 @@ namespace DFLite.World.Grid
             _mesh.vertices = vertices;
             _mesh.uv = uv;
             _mesh.triangles = triangles;
+            Debug.Log(_mesh.vertexCount);
         }
     }
 
