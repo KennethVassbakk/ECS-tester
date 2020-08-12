@@ -18,6 +18,9 @@ public class TestingGrid : MonoBehaviour
     public int gridDepth = 1;
     public float cellSize = 1f;
 
+    public Mesh Mesh;
+    public Material Material;
+
     //public TGridObject[,] CurrentGrid;
     private void Awake() {
         Instance = this;
@@ -28,8 +31,7 @@ public class TestingGrid : MonoBehaviour
         pfGrid = new Grid<GridNode>(gridWidth, gridHeight, gridDepth, cellSize, Vector3.zero, (grid, x, y, z) => new GridNode(grid, x, y, z));
         gridVisual.SetGrid(this.pfGrid);
     }
-
-
+    
     private void Update() {
 
         if (!showDebug) return;

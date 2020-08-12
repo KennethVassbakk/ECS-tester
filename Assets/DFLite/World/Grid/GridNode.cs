@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using Unity.Entities;
 using UnityEngine;
 
 namespace DFLite.World.Grid
@@ -11,12 +13,15 @@ namespace DFLite.World.Grid
 
         private bool _isWalkable;
 
+        private Entity ent;
+
         public GridNode(Grid<GridNode> grid, int x, int y, int z)
         {
             this._grid = grid;
             this._x = x;
             this._y = y;
             this._z = z;
+            //this.ent = Entity.Null;
             _isWalkable = true;
         }
 
@@ -29,6 +34,17 @@ namespace DFLite.World.Grid
         {
             this._isWalkable = isWalkable;
             _grid.TriggerGridObjectChanged(_x, _y, _z);
+        }
+
+        public void SetEntity(Entity ent)
+        {
+            this.ent = ent;
+            _grid.TriggerGridObjectChanged(_x, _y, _z);
+        }
+
+        public Entity GetEntity()
+        {
+            return ent;
         }
     }
 

@@ -59,7 +59,25 @@ namespace DFLite.Controllers
             var diff = this._lastMousePosition - this.MousePosition;
 
             if (!(Vector3.Distance(diff, Vector3.zero) > 0.01f)) return;
-            this._camera.transform.Translate(diff * .8f);
+            _camera.transform.Translate(diff * .8f);
+
+            var limitedPos = _camera.transform.position;
+            var transform1 = _camera.transform;
+            
+            if (transform1.position.x < TestingGrid.Instance.pfGrid.OriginPosition().x)
+                limitedPos.x = TestingGrid.Instance.pfGrid.OriginPosition().x;
+            
+            if (transform1.position.x > (TestingGrid.Instance.pfGrid.OriginPosition().x + TestingGrid.Instance.pfGrid.GetWidth()))
+                limitedPos.x = TestingGrid.Instance.pfGrid.OriginPosition().x + TestingGrid.Instance.pfGrid.GetWidth();
+            
+            if (transform1.position.y < TestingGrid.Instance.pfGrid.OriginPosition().x)
+                limitedPos.y = TestingGrid.Instance.pfGrid.OriginPosition().x;
+            
+            if (transform1.position.y > (TestingGrid.Instance.pfGrid.OriginPosition().y + TestingGrid.Instance.pfGrid.GetHeight()) )
+                limitedPos.y = TestingGrid.Instance.pfGrid.OriginPosition().y + TestingGrid.Instance.pfGrid.GetHeight();
+            
+            transform1.position = new Vector3(limitedPos.x, limitedPos.y, transform1.position.z);
+            
             _updateViewRect = true;
         }
 

@@ -210,5 +210,10 @@ namespace DFLite.World.Grid
         {
             return x >= 0 && y >= 0 && z >= 0 && x < _width && y < _height && z < _depth;
         }
+
+        public Vector3 OriginPosition()
+        {
+            return this._originPosition;
+        }
     }
 }
