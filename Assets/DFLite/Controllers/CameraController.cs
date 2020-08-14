@@ -1,5 +1,5 @@
-﻿using DFLite.Helpers;
-using System;
+﻿using System;
+using DFLite.Helpers;
 using UnityEngine;
 
 namespace DFLite.Controllers
@@ -7,82 +7,89 @@ namespace DFLite.Controllers
     public class CameraController : MonoBehaviour
     {
         // ReSharper disable once InconsistentNaming
-        public const float PIXEL_PER_UNIT = 32;
-        public float ZoomDesired { get; protected set; }
-        public float ZoomMin { get; protected set; }
-        public float ZoomMax { get; protected set; }
-
-        public float Zoom => (Screen.height / (this.ZoomDesired * CameraController.PIXEL_PER_UNIT) * 0.5f);
-
-
-        public float Sensitivity { get; protected set; }
-        public Vector3 MousePosition { get; protected set; }
-
-        public RectI viewRect;
-        private Vector3 _lastMousePosition;
+        private const int PIXEL_PER_UNIT = 32;
         private Camera _camera;
+        private Vector3 _lastMousePosition;
+        private Rect _bounds;
         private bool _updateViewRect;
 
+        public RectI viewRect;
+        public float zoomDesired;
+        public float zoomMax = 30f;
+        public float zoomMin = .4f;
 
-        private void Start() {
-            this._camera = Camera.main;
-            this.ZoomMin = .1f;
-            this.ZoomMax = 30f;
-            this.Sensitivity = 1f;
-            this.ZoomDesired = 1f;
+        // Pixel Perfect?
+        private float Zoom => Screen.height / (zoomDesired * PIXEL_PER_UNIT) * 0.5f;
+        private float Sensitivity { get; set; }
+        private Vector3 MousePosition { get; set; }
+
+        private void Start()
+        {
+            _camera = Camera.main;
+            Sensitivity = 1f;
+            zoomDesired = 1f;
+
+            _bounds.xMin = TestingGrid.Instance.pfGrid.OriginPosition().x;
+            _bounds.xMax = TestingGrid.Instance.pfGrid.GetWidth() - 1;
+            _bounds.yMin = TestingGrid.Instance.pfGrid.OriginPosition().y;
+            _bounds.yMax = TestingGrid.Instance.pfGrid.GetHeight() - 1;
             UpdateViewRect();
         }
 
-        private void Update() {
+        private void Update()
+        {
             if (Input.GetMouseButtonDown(2))
                 _lastMousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
 
-            this.UpdateCamera();
+            UpdateCamera();
 
-            if (_updateViewRect) {
-                UpdateViewRect();
-            }
+            if (_updateViewRect) UpdateViewRect();
         }
 
-        private void UpdateCamera() {
-            this.ZoomDesired += this.ZoomDesired * Input.GetAxis("Mouse ScrollWheel") * this.Sensitivity;
-            this.ZoomDesired = Mathf.Clamp(this.ZoomDesired, this.ZoomMin, this.ZoomMax);
+        private void UpdateCamera()
+        {
+            var mw = Input.GetAxis("Mouse ScrollWheel");
+            zoomDesired += (zoomDesired > 0.5f ? zoomDesired : 0.51f) * mw * Sensitivity;
+            zoomDesired = Mathf.Clamp(zoomDesired, zoomMin, zoomMax);
+            zoomDesired = Mathf.Round(zoomDesired * 10f) / 10f;
 
-            if (Math.Abs(Zoom - _camera.orthographicSize) > 0.01f) {
-                this._camera.orthographicSize = this.Zoom;
+            // Are We  zooming?
+            if (Math.Abs(Zoom - _camera.orthographicSize) > 0.01f)
+            {
+                _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, Zoom, Time.deltaTime * 10f);
                 _updateViewRect = true;
-
+            }
+            else if (Math.Abs(Zoom - _camera.orthographicSize) > 0f &&
+                     Math.Abs(Zoom - _camera.orthographicSize) <= 0.01f)
+            {
+                _camera.orthographicSize = Zoom;
+                _updateViewRect = true;
             }
 
+            // Are we holding the 2nd mouse button down?
             if (!Input.GetMouseButton(2)) return;
+
             MousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-            var diff = this._lastMousePosition - this.MousePosition;
+            var diff = _lastMousePosition - MousePosition;
 
+            // If the distance is miniscule, return
             if (!(Vector3.Distance(diff, Vector3.zero) > 0.01f)) return;
-            _camera.transform.Translate(diff * .8f);
+            Transform camTransform;
+            (camTransform = _camera.transform).Translate(diff * 0.1f);
 
-            var limitedPos = _camera.transform.position;
-            var transform1 = _camera.transform;
-            
-            if (transform1.position.x < TestingGrid.Instance.pfGrid.OriginPosition().x)
-                limitedPos.x = TestingGrid.Instance.pfGrid.OriginPosition().x;
-            
-            if (transform1.position.x > (TestingGrid.Instance.pfGrid.OriginPosition().x + TestingGrid.Instance.pfGrid.GetWidth()))
-                limitedPos.x = TestingGrid.Instance.pfGrid.OriginPosition().x + TestingGrid.Instance.pfGrid.GetWidth();
-            
-            if (transform1.position.y < TestingGrid.Instance.pfGrid.OriginPosition().x)
-                limitedPos.y = TestingGrid.Instance.pfGrid.OriginPosition().x;
-            
-            if (transform1.position.y > (TestingGrid.Instance.pfGrid.OriginPosition().y + TestingGrid.Instance.pfGrid.GetHeight()) )
-                limitedPos.y = TestingGrid.Instance.pfGrid.OriginPosition().y + TestingGrid.Instance.pfGrid.GetHeight();
-            
-            transform1.position = new Vector3(limitedPos.x, limitedPos.y, transform1.position.z);
-            
+            var camPos = camTransform.position;
+
+            // Limit camera movement
+            camPos = new Vector3(Mathf.Clamp(camPos.x, _bounds.xMin, _bounds.xMax), Mathf.Clamp(camPos.y, _bounds.yMin, _bounds.yMax), camPos.z);
+            _camera.transform.position = camPos;
+
             _updateViewRect = true;
         }
 
-        private void UpdateViewRect() {
+        private void UpdateViewRect()
+        {
             _updateViewRect = false;
+
             // Creating local var for efficiency
             var position = _camera.transform.position;
             var currOrthoSize = Mathf.CeilToInt(_camera.orthographicSize);
@@ -90,7 +97,7 @@ namespace DFLite.Controllers
             //  Undone: When we're doing chunks, we should probably add an additional chunk size on each side
             var orthoSize = currOrthoSize + Mathf.CeilToInt(currOrthoSize / 5f);
 
-            this.viewRect = new RectI(
+            viewRect = new RectI(
                 new Vector2Int(
                     Mathf.FloorToInt(position.x - orthoSize * _camera.aspect),
                     Mathf.FloorToInt(position.y - orthoSize)
@@ -100,7 +107,7 @@ namespace DFLite.Controllers
                 ));
 
             // Time to redraw the map!
-            // TODO: Reference the overwatch unit and redraw map!
+            // TODO: Reference the over-watch unit and redraw map!
             //TestingGrid.Instance.gridVisual.UpdateMesh();
         }
     }

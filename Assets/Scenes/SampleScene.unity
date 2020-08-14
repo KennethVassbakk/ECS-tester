@@ -417,6 +417,9 @@ MonoBehaviour:
   viewRect:
     min: {x: 0, y: 0}
     max: {x: 0, y: 0}
+  zoomDesired: 0
+  zoomMax: 10
+  zoomMin: 0.1
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -427,7 +430,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.2, g: 0.2, b: 0.2, a: 0}
+  m_BackGroundColor: {r: 0.098039225, g: 0.098039225, b: 0.098039225, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -444,7 +447,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5.8125
+  orthographic size: 12.10938
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -579,7 +582,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0bc9a962dfdf634ca0356a743a68288, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 3}
+  _mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
   material: {fileID: 2100000, guid: 733fc25411f653247889ef495341c7f6, type: 2}
 --- !u!114 &535357216
 MonoBehaviour:
@@ -598,8 +601,10 @@ MonoBehaviour:
   showDebug: 0
   gridWidth: 100
   gridHeight: 100
-  gridDepth: 1
-  cellSize: 32
+  gridDepth: 100
+  cellSize: 1
+  Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  Material: {fileID: 2100000, guid: 733fc25411f653247889ef495341c7f6, type: 2}
 --- !u!114 &535357217
 MonoBehaviour:
   m_ObjectHideFlags: 0

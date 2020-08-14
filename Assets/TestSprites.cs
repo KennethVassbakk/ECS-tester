@@ -153,9 +153,9 @@ public class TestSprites : MonoBehaviour
     // TODO: Jobify these.
     public void DrawSprites(int z)
     {
-        for (int x = 0; x < xWidth; x++)
+        for (var x = 0; x < xWidth; x++)
         {
-            for (int y = 0; y < yWidth; y++)
+            for (var y = 0; y < yWidth; y++)
             {
                 //_entityManager.RemoveComponent(TestingGrid.Instance.pfGrid.GetGridObject(x, y, z).GetEntity(), typeof(DisableRendering));
                 _entityManager.RemoveComponent(TestingGrid.Instance.pfGrid.GetGridObject(x, y, z).GetEntity(),

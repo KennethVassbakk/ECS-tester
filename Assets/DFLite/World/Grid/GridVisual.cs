@@ -20,7 +20,7 @@ namespace DFLite.World.Grid
 
         public void SetGrid(Grid<GridNode> grid)
         {
-            this._grid = grid;
+            _grid = grid;
             _updateMesh = true;
 
             grid.OnGridObjectChanged += Grid_OnGridValueChanged;
@@ -36,15 +36,16 @@ namespace DFLite.World.Grid
             _updateMesh = true;
         }
 
-        private void LateUpdate() {
+        private void LateUpdate()
+        {
             if (!_updateMesh) return;
 
             _updateMesh = false;
             UpdateVisual();
         }
 
-        private void UpdateVisual() {
-
+        private void UpdateVisual()
+        {
             // UNDONE: We should check if the current visuals are still inside the camera.
             // If they are inside the camera view, we can leave them as is.
             // if they are not inside the camera view, we can eliminate them.
@@ -52,27 +53,29 @@ namespace DFLite.World.Grid
             // We should only draw clusters that are inside the camera view.
 
 
-            MeshUtils.CreateEmptyMeshArrays(_grid.GetWidth() * _grid.GetHeight(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
+            MeshUtils.CreateEmptyMeshArrays(_grid.GetWidth() * _grid.GetHeight(), out var vertices, out var uv,
+                out var triangles);
 
-            for (int x = 0; x < _grid.GetWidth(); x++) {
-                for (int y = 0; y < _grid.GetHeight(); y++) {
+            for (var x = 0; x < _grid.GetWidth(); x++)
+            for (var y = 0; y < _grid.GetHeight(); y++)
+            {
+                var index = x * _grid.GetHeight() + y;
+                var quadSize = new Vector3(1, 1) * _grid.GetCellSize();
 
-                    int index = x * _grid.GetHeight() + y;
-                    Vector3 quadSize = new Vector3(1, 1) * _grid.GetCellSize();
-
-                    GridNode gridNode = _grid.GetGridObject(x, y, _currentDepthIndex);
+                var gridNode = _grid.GetGridObject(x, y, _currentDepthIndex);
 
 
-                    Vector2 uv00 = new Vector2(0, 0);
-                    Vector2 uv11 = new Vector2(0.5f, 0.5f);
+                var uv00 = new Vector2(0, 0);
+                var uv11 = new Vector2(0.5f, 0.5f);
 
-                    if (!gridNode.IsWalkable()) {
-                        uv00 = new Vector2(.5f, .5f);
-                        uv11 = new Vector2(1f, 1f);
-                    }
-
-                    MeshUtils.AddToMeshArrays(vertices, uv, triangles, index, _grid.GetWorldPosition(x, y) + quadSize * .0f, 0f, quadSize, uv00, uv11);
+                if (!gridNode.IsWalkable())
+                {
+                    uv00 = new Vector2(.5f, .5f);
+                    uv11 = new Vector2(1f, 1f);
                 }
+
+                MeshUtils.AddToMeshArrays(vertices, uv, triangles, index, _grid.GetWorldPosition(x, y) + quadSize * .0f,
+                    0f, quadSize, uv00, uv11);
             }
 
             _mesh.vertices = vertices;
@@ -81,5 +84,4 @@ namespace DFLite.World.Grid
             Debug.Log(_mesh.vertexCount);
         }
     }
-
 }
